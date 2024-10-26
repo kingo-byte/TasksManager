@@ -6,7 +6,7 @@ using static COMMON.Requests;
 
 namespace TasksManager.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class TaskController : BaseController
     {

@@ -27,16 +27,13 @@ namespace DAL.DapperAccess
             {
                 db.Open();
 
-                using (var transaction = db.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        return db.QueryFirstOrDefault<T>(storedProcedure, parameters = null, commandType: CommandType.StoredProcedure)!;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
+                    return db.QueryFirstOrDefault<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure)!;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
             }
         }
@@ -47,16 +44,13 @@ namespace DAL.DapperAccess
             {
                 db.Open();
 
-                using (var transaction = db.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        return db.Query<T>(storedProcedure, parameters = null, commandType: CommandType.StoredProcedure);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
+                    return db.Query<T>(storedProcedure, parameters = null, commandType: CommandType.StoredProcedure);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
             }
         }
@@ -79,7 +73,7 @@ namespace DAL.DapperAccess
                     }
                     catch
                     {
-                        transaction.Rollback(); 
+                        transaction.Rollback();
 
                         throw;
                     }

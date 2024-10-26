@@ -29,8 +29,8 @@ namespace DAL.Models
         [JsonIgnore]
         public required byte[] PasswordSalt { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedDate { get; set; }
 
-        public DateTime LastModifiedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? LastModifiedDate { get; set; }
     }
 }

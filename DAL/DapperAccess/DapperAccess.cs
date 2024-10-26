@@ -7,23 +7,23 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using COMMON;
+using Microsoft.Extensions.Options;
 
 namespace DAL.DapperAccess
 {
     public class DapperAccess
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
+        private readonly Configuration _configuration;
 
-        public DapperAccess(IConfiguration configuration)
+        public DapperAccess(IOptions<Configuration> configuration)
         {
-            _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("ShipHiveConnectionString")!;
+            _configuration = configuration.Value;
         }
 
         public T QueryFirst<T>(string storedProcedure, DynamicParameters? parameters)
         {
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            using (IDbConnection db = new SqlConnection(_configuration.ConnectionStrings!.TasksManager))
             {
                 db.Open();
 
@@ -43,7 +43,7 @@ namespace DAL.DapperAccess
 
         public IEnumerable<T> Query<T>(string storedProcedure, DynamicParameters? parameters)
         {
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            using (IDbConnection db = new SqlConnection(_configuration.ConnectionStrings!.TasksManager))
             {
                 db.Open();
 
@@ -63,7 +63,7 @@ namespace DAL.DapperAccess
 
         public int Execute(string storedProcedure, DynamicParameters? parameters)
         {
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            using (IDbConnection db = new SqlConnection(_configuration.ConnectionStrings!.TasksManager))
             {
                 db.Open();
 
@@ -71,11 +71,17 @@ namespace DAL.DapperAccess
                 {
                     try
                     {
-                        return db.Execute(storedProcedure, parameters = null, commandType: CommandType.StoredProcedure);
+                        int result = db.Execute(storedProcedure, parameters, transaction, commandType: CommandType.StoredProcedure);
+
+                        transaction.Commit();
+
+                        return result;
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        throw new Exception(ex.Message);
+                        transaction.Rollback(); 
+
+                        throw;
                     }
                 }
             }
@@ -83,7 +89,7 @@ namespace DAL.DapperAccess
 
         public void BulkExecute(string storedProcedure, List<object>? parameters)
         {
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            using (IDbConnection db = new SqlConnection(_configuration.ConnectionStrings!.TasksManager))
             {
                 db.Open();
 
@@ -95,11 +101,11 @@ namespace DAL.DapperAccess
 
                         transaction.Commit();
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         transaction.Rollback();
 
-                        throw new Exception(ex.Message);
+                        throw;
                     }
                 }
             }

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace COMMON
 {
-    public static class Configuration
+    public class Configuration
     {
-        public static JWT? JWT { get; set; }
-        public static List<string>? AllowedOrigins { get; set; }
-        public static ConnectionStrings? ConnectionStrings { get; set; }    
+        public JWT? JWT { get; set; }
+        public List<string>? AllowedOrigins { get; set; }
+        public ConnectionStrings? ConnectionStrings { get; set; }    
     }
 
     public class ConnectionStrings
     {
-        private string? TasksManager { get; set; }
+        public string? TasksManager { get; set; }
     }
 
     public class JWT 

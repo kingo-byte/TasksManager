@@ -7,9 +7,7 @@ using static COMMON.Requests;
 
 namespace BAL.IServices
 {
-    public interface IAuthService
+    public interface IUserService
     {
-        public long SignUp(SignUpRequest request);
-        public bool ValidateSignUp(SignUpRequest request, out string message);
     }
 }

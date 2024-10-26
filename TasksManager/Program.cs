@@ -1,3 +1,4 @@
+using BAL.IServices;
 using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
@@ -12,6 +13,7 @@ builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Conf
 
 builder.Services.AddTransient<DapperAccess>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 

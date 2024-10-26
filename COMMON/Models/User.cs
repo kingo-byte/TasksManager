@@ -15,12 +15,8 @@ namespace DAL.Models
         [Key]
         public long Id { get; set; }
 
-        [Column(TypeName = "nvarchar(250)")]
-        [StringLength(250)]
         public string? UserName { get; set; } = string.Empty;
 
-        [Column(TypeName = "nvarchar(250)")]
-        [StringLength(250)]
         public string? Email { get; set; } = string.Empty;
 
         [JsonIgnore]
@@ -32,5 +28,7 @@ namespace DAL.Models
         public DateTime? CreatedDate { get; set; }
 
         public DateTime? LastModifiedDate { get; set; }
+
+        public List<Task>? Tasks { get; set; }   
     }
 }

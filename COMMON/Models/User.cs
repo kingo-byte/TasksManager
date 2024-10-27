@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace DAL.Models
+namespace COMMON.Models
 {
     public class User
     {

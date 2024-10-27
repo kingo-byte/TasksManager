@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COMMON.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,7 @@ namespace BAL.IServices
     {
         public long SignUp(SignUpRequest request);
         public bool ValidateSignUp(SignUpRequest request, out string message);
+        public User? GetUserByCredentials(SignInRequest request);
+        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt);
     }
 }

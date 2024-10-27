@@ -1,15 +1,9 @@
 ﻿using BAL.IServices;
-using COMMON;
+using COMMON.Models;
 using DAL.DapperAccess;
-using DAL.Models;
 using Dapper;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using static COMMON.Requests;
 
 namespace BAL.Services
@@ -20,6 +14,16 @@ namespace BAL.Services
         public AuthService(DapperAccess dapperAccess)
         {
             _dapperAccess = dapperAccess;
+        }
+
+        public User? GetUserByCredentials(SignInRequest request)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("P__UserName", request.UserName);
+            parameters.Add("P__Email", request.Email);
+
+            return _dapperAccess.QueryFirst<User>("sp_GetUserByCredentials", parameters);    
         }
 
         public long SignUp(SignUpRequest request)
@@ -93,7 +97,7 @@ namespace BAL.Services
             return true;
         }
 
-        private (byte[], byte[]) CreatePasswordHash(string password)
+        public (byte[], byte[]) CreatePasswordHash(string password)
         {
             using (var hmac = new HMACSHA512())
             {
@@ -104,7 +108,7 @@ namespace BAL.Services
             }
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {

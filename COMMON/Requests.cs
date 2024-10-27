@@ -13,7 +13,19 @@ namespace COMMON
             [MaxLength(250)]
             public string? Email { get; set; }
             public required string Password { get; set; }
-        } 
+        }
+
+        public class SignInRequest 
+        {
+            [MaxLength(250)]
+            public string? UserName { get; set; }
+
+            [EmailAddress]
+            [MaxLength(250)]
+            public string? Email { get; set; }
+            public required string Password { get; set; }
+        }
+
         
         public class EditTaskRequest
         {

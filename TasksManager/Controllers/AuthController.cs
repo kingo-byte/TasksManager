@@ -1,6 +1,11 @@
 using BAL.IServices;
+using COMMON;
 using COMMON.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using static COMMON.Requests;
 
 namespace TasksManager.Controllers
@@ -11,11 +16,13 @@ namespace TasksManager.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IAuthService _authService;
+        private readonly Configuration _configuration;
 
-        public AuthController(ILogger<AuthController> logger, IAuthService authService)
+        public AuthController(ILogger<AuthController> logger, IAuthService authService, IOptions<Configuration> configuration)
         {
             _logger = logger;
             _authService = authService;
+            _configuration = configuration.Value;
         }
 
         [HttpPost]
@@ -57,14 +64,35 @@ namespace TasksManager.Controllers
                     return BadRequest("Invalid Password");
                 }
 
-                //string token = CreateToken(checkUser);
+                string token = CreateToken(checkUser);
 
-                return Ok("test token");
+                return Ok(token);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return CreateValidationProblemDetails("SignIn", ex.Message, 500);
             }
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim("UserId", user.Id.ToString()),
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.JWT!.PrivateKey!));
+
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(1),
+                signingCredentials: creds);
+
+            string jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }

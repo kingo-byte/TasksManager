@@ -29,8 +29,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Configuration"));
 
 builder.Services.AddTransient<DapperAccess>();
+builder.Services.AddTransient<TaskAccess>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -39,11 +41,11 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader());
 
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

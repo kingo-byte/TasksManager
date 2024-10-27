@@ -1,5 +1,6 @@
 ﻿using BAL.IServices;
 using BAL.Services;
+using COMMON.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,12 @@ namespace TasksManager.Controllers
     public class TaskController : BaseController
     {
         private readonly ITaskService _taskService;
-        public TaskController(ITaskService taskService)
+        private readonly IUserService _userService;
+
+        public TaskController(ITaskService taskService, IUserService userService)
         {
             _taskService = taskService;
+            _userService = userService;
         }
 
         [HttpPost]

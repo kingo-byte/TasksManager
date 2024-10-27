@@ -20,10 +20,10 @@ namespace COMMON.Models
         public string? Email { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public required byte[] PasswordHash { get; set; }
+        public byte[]? PasswordHash { get; set; }
 
         [JsonIgnore]
-        public required byte[] PasswordSalt { get; set; }
+        public byte[]? PasswordSalt { get; set; }
 
         public DateTime? CreatedDate { get; set; }
 

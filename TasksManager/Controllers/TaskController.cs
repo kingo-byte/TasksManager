@@ -17,6 +17,7 @@ namespace TasksManager.Controllers
         }
 
         [HttpPost]
+        [Route("EditTask")]
         public IActionResult EditTask(EditTaskRequest request)
         {
             try 

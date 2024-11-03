@@ -1,0 +1,37 @@
+# Ignore Git repository files
+.git
+.gitignore
+
+# Ignore environment and secrets files
+*.env
+.env.*
+secrets.json
+appsettings.Development.json
+
+# Ignore IDE and editor configurations
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore build output directories
+bin/
+obj/
+Debug/
+Release/
+publish/
+
+# Ignore OS and miscellaneous files
+*.DS_Store
+*.log
+*.tmp
+*.temp
+*.cache
+*.pid
+
+# Ignore Docker-related files (if necessary)
+docker-compose*
+Dockerfile*

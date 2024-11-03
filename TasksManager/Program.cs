@@ -3,25 +3,17 @@ using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System.Net;
 using System.Text;
 using TasksManager.BackgroundServices;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-//Host.CreateDefaultBuilder(args)
-//.ConfigureWebHostDefaults(webBuilder =>
-//{
-//    webBuilder.ConfigureKestrel(serverOptions =>
-//    {
-//        serverOptions.Listen(IPAddress.Any, 8080);
-//    }).UseStartup<Program>();
-//});
+// Configure Kestrel to listen on the port provided by Heroku
+var port = "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
 
-//triggering deployment
-
+// Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -41,9 +33,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddSingleton<SampleData>();
-//builder.Services.AddHostedService<SyncUsers>(); 
-
 builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Configuration"));
 
 builder.Services.AddTransient<DapperAccess>();
@@ -54,26 +43,26 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+
+// Remove HTTPS redirection middleware
+// app.UseHttpsRedirection();
+
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader());
 
+// Enable Swagger only in development (optional)
 // if (app.Environment.IsDevelopment())
 // {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
+// }
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-//app.MapGet("/messages", (SampleData data) => data.Data.Order());
 
 app.Run();

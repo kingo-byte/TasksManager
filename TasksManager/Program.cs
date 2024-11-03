@@ -9,10 +9,6 @@ using TasksManager.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to listen on the port provided by Heroku
-var port = "8080";
-builder.WebHost.UseUrls($"http://*:{port}");
-
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

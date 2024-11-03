@@ -5,6 +5,7 @@ using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TasksManager.BackgroundServices;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,10 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//builder.Services.AddSingleton<SampleData>();
+//builder.Services.AddHostedService<SyncUsers>(); 
+
 builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Configuration"));
 
 builder.Services.AddTransient<DapperAccess>();
@@ -53,9 +58,9 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
+//app.MapGet("/messages", (SampleData data) => data.Data.Order());
 
 app.Run();

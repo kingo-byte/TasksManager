@@ -3,11 +3,22 @@ using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Text;
 using TasksManager.BackgroundServices;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+//Host.CreateDefaultBuilder(args)
+//.ConfigureWebHostDefaults(webBuilder =>
+//{
+//    webBuilder.ConfigureKestrel(serverOptions =>
+//    {
+//        serverOptions.Listen(IPAddress.Any, 8080);
+//    }).UseStartup<Program>();
+//});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

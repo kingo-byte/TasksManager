@@ -20,6 +20,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 //    }).UseStartup<Program>();
 //});
 
+//triggering deployment
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

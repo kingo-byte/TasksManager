@@ -22,7 +22,7 @@ namespace TasksManager.Controllers
         }
 
         [HttpPost]
-        [Route("EditTask"), Authorize]
+        [Route("EditTask")]
         public IActionResult EditTask(EditTaskRequest request)
         {
             try 

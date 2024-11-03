@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using COMMON;
 using Microsoft.Extensions.Options;
+using static Dapper.SqlMapper;
 
 namespace DAL.DapperAccess
 {
@@ -104,5 +105,29 @@ namespace DAL.DapperAccess
                 }
             }
         }
+
+        public T QueryMultiple<T>(string command, DynamicParameters parameters, CommandType commandType, Func<GridReader, T> mapFunction)
+        {
+            using (IDbConnection db = new SqlConnection(_configuration.ConnectionStrings!.TasksManager))
+            {
+                if (db.State != ConnectionState.Open)
+                {
+                    db.Open();
+                }
+
+                try
+                {
+                    using (GridReader multi = db.QueryMultiple(command, parameters, commandType: commandType))
+                    {
+                        return mapFunction(multi);
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

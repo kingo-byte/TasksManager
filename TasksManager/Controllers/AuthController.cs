@@ -73,14 +73,7 @@ namespace TasksManager.Controllers
                 return CreateValidationProblemDetails("SignIn", ex.Message, 500);
             }
         }
-
-        [HttpGet]
-        [Route("Test")] 
-        public IActionResult Test() {
-
-            return Ok("HIIIIIII");        
-        }
-
+        
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>()

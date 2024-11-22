@@ -33,7 +33,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Configuration"));
 
 builder.Services.AddTransient<DapperAccess>();
-builder.Services.AddTransient<TaskAccess>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IUserService, UserService>();

@@ -1,4 +1,4 @@
-﻿using BAL.Events;
+﻿using BAL.Events.Auth;
 using BAL.IServices;
 using COMMON.Models;
 using DAL.DapperAccess;

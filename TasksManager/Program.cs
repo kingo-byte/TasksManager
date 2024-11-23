@@ -9,7 +9,7 @@ using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using BAL.Events;
+using BAL.Events.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;

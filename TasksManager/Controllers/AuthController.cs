@@ -59,7 +59,7 @@ namespace TasksManager.Controllers
                     return CreateValidationProblemDetails("SignIn", "Invalid Credentials", 400);
                 }
 
-                if (!_authService.VerifyPasswordHash(request.Password, checkUser.PasswordHash, checkUser.PasswordSalt))
+                if (!_authService.VerifyPasswordHash(request.Password, checkUser.PasswordHash!, checkUser.PasswordSalt!))
                 {
                     return BadRequest("Invalid Password");
                 }

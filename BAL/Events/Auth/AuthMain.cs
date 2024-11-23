@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static COMMON.Requests;
 
-namespace BAL.Events
+namespace BAL.Events.Auth
 {
     public class AuthMain
     {

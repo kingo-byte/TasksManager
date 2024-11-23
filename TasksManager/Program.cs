@@ -9,8 +9,10 @@ using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BAL.Events;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var environment = builder.Environment;
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -34,14 +36,19 @@ builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Conf
 
 builder.Services.AddTransient<DapperAccess>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AuthMain>();
+builder.Services.AddScoped<AuthEvents>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Bind to the PORT environment variable required by Heroku
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080"; // Default to 8080 if PORT not set
-app.Urls.Add($"http://*:{port}");
+if (!environment.IsDevelopment()) 
+{
+    // Bind to the PORT environment variable required by Heroku
+    string port = Environment.GetEnvironmentVariable("PORT") ?? "8080"; // Default to 8080 if PORT not set
+    app.Urls.Add($"http://*:{port}");
+}
 
 // Configure the HTTP request pipeline.
 // app.UseHttpsRedirection();

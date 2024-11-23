@@ -1,4 +1,5 @@
-﻿using BAL.IServices;
+﻿using BAL.Events;
+using BAL.IServices;
 using COMMON.Models;
 using DAL.DapperAccess;
 using Dapper;
@@ -11,9 +12,15 @@ namespace BAL.Services
     public class AuthService : IAuthService
     {
         private readonly DapperAccess _dapperAccess;
-        public AuthService(DapperAccess dapperAccess)
+        private readonly AuthMain _authMain;
+        private readonly AuthEvents _authEvents; 
+
+        public AuthService(DapperAccess dapperAccess, AuthMain authMain, AuthEvents authEvents)
         {
             _dapperAccess = dapperAccess;
+            _authMain = authMain;
+            _authEvents = authEvents;
+            _authMain.InitializeEvents();
         }
 
         public User? GetUserByCredentials(SignInRequest request)
@@ -28,6 +35,8 @@ namespace BAL.Services
 
         public long SignUp(SignUpRequest request)
         {
+            _authEvents.InvokePreEventSignUp(ref request);
+
             (byte[] passwordSalt, byte[] passwordHash) = CreatePasswordHash(request.Password);
 
             User user = new User()

@@ -14,5 +14,6 @@ namespace BAL.IServices
         public bool ValidateSignUp(SignUpRequest request, out string message);
         public User? GetUserByCredentials(SignInRequest request);
         public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt);
+        public string CreateRefreshToken(long userId);
     }
 }

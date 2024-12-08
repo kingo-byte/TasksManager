@@ -62,6 +62,20 @@ namespace BAL.Services
             return userId;
         }
 
+        public string CreateRefreshToken(long userId)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            string refreshToken = $"{Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))}-{Guid.NewGuid()}";
+
+            parameters.Add("P__Token", refreshToken);
+            parameters.Add("P__UserId", userId);
+            parameters.Add("P__ExpiresOnUtc", DateTime.UtcNow.AddDays(7));
+
+            _dapperAccess.Execute("sp_CreateRefreshToken", parameters); 
+
+            return refreshToken;
+        }
+
         public bool ValidateSignUp(SignUpRequest request, out string message)
         {
             message = string.Empty;

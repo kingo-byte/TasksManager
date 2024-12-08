@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using static COMMON.Models.Records;
 using static COMMON.Requests;
 
 namespace TasksManager.Controllers
@@ -66,7 +68,9 @@ namespace TasksManager.Controllers
 
                 string token = CreateToken(checkUser);
 
-                return Ok(token);
+                string refreshToken = _authService.CreateRefreshToken(checkUser.Id);
+
+                return Ok(new SignInResponse(token, refreshToken));
             }
             catch (Exception ex)
             {
@@ -85,6 +89,7 @@ namespace TasksManager.Controllers
         {
             List<Claim> claims = new List<Claim>()
             {
+                new Claim("Guid", Guid.NewGuid().ToString()),
                 new Claim("UserId", user.Id.ToString()),
             };
 
@@ -100,6 +105,6 @@ namespace TasksManager.Controllers
             string jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
-        }
+        }  
     }
 }

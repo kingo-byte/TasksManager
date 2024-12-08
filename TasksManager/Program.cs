@@ -14,7 +14,6 @@ using BAL.Events.Auth;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
 
-// Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -50,14 +49,11 @@ if (!environment.IsDevelopment())
     app.Urls.Add($"http://*:{port}");
 }
 
-// Configure the HTTP request pipeline.
-// app.UseHttpsRedirection();
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader());
 
-// Enable Swagger (can be limited to development if desired)
 app.UseSwagger();
 app.UseSwaggerUI();
 

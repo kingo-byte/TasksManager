@@ -1,10 +1,16 @@
 ﻿using BAL.Events.Auth;
 using BAL.IServices;
+using COMMON;
 using COMMON.Models;
 using DAL.DapperAccess;
 using Dapper;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using static COMMON.Models.Records;
 using static COMMON.Requests;
 
 namespace BAL.Services
@@ -13,24 +19,35 @@ namespace BAL.Services
     {
         private readonly DapperAccess _dapperAccess;
         private readonly AuthMain _authMain;
-        private readonly AuthEvents _authEvents; 
+        private readonly AuthEvents _authEvents;
+        private readonly Configuration _configuration;
 
-        public AuthService(DapperAccess dapperAccess, AuthMain authMain, AuthEvents authEvents)
+        public AuthService(DapperAccess dapperAccess, AuthMain authMain, AuthEvents authEvents, IOptions<Configuration> configuration)
         {
             _dapperAccess = dapperAccess;
             _authMain = authMain;
             _authEvents = authEvents;
+            _configuration = configuration.Value;
             _authMain.InitializeEvents();
         }
 
-        public User? GetUserByCredentials(SignInRequest request)
+        public User? GetUserByCredentials(string? userName, string? email)
         {
             DynamicParameters parameters = new DynamicParameters();
 
-            parameters.Add("P__UserName", request.UserName);
-            parameters.Add("P__Email", request.Email);
+            parameters.Add("P__UserName", userName);
+            parameters.Add("P__Email", email);
 
             return _dapperAccess.QueryFirst<User>("sp_GetUserByCredentials", parameters);    
+        }
+
+        public User? GetUserById(long userId)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("P__UserId", userId);
+
+            return _dapperAccess.QueryFirst<User>("sp_GetUserById", parameters); 
         }
 
         public long SignUp(SignUpRequest request)
@@ -76,6 +93,52 @@ namespace BAL.Services
             return refreshToken;
         }
 
+        public bool RefreshToken(out RefreshTokenResponse response, RefreshTokenRequest request)
+        {
+            response = new RefreshTokenResponse(string.Empty, string.Empty);
+
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("P__Token", request.RefreshToken);
+
+            RefreshToken? refreshToken = _dapperAccess.QueryFirst<RefreshToken>("sp_GetRefreshToken", parameters);
+
+            if (refreshToken == null || refreshToken.ExpiresOnUtc < DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            User loggedInUser = GetUserById(refreshToken.UserId)!;
+
+            string updatedAccessToken = CreateToken(loggedInUser);
+            string updatedRefreshToken = CreateRefreshToken(refreshToken.UserId);
+            
+            response = new RefreshTokenResponse(updatedAccessToken, updatedRefreshToken);
+
+            return true;
+        }
+
+        public string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim("Guid", Guid.NewGuid().ToString()),
+                new Claim("UserId", user.Id.ToString()),
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.JWT!.PrivateKey!));
+
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(1),
+                signingCredentials: creds);
+
+            string jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
         public bool ValidateSignUp(SignUpRequest request, out string message)
         {
             message = string.Empty;
@@ -119,7 +182,6 @@ namespace BAL.Services
 
             return true;
         }
-
         public (byte[], byte[]) CreatePasswordHash(string password)
         {
             using (var hmac = new HMACSHA512())
@@ -130,7 +192,6 @@ namespace BAL.Services
                 return (passwordSalt, passwordHash);
             }
         }
-
         public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))

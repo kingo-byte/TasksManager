@@ -44,7 +44,7 @@ namespace TasksManager.Controllers
             }
             catch (Exception ex)
             {
-                return CreateValidationProblemDetails("SignUp", ex.Message, 500);
+                return CreateValidationProblemDetails("SignUp", ex.ToString(), 500);
             }
         }
 
@@ -54,7 +54,7 @@ namespace TasksManager.Controllers
         {
             try
             {
-                User? checkUser = _authService.GetUserByCredentials(request);
+                User? checkUser = _authService.GetUserByCredentials(request.UserName, request.Email);
 
                 if (checkUser == null)
                 {
@@ -66,45 +66,36 @@ namespace TasksManager.Controllers
                     return BadRequest("Invalid Password");
                 }
 
-                string token = CreateToken(checkUser);
-
+                string token = _authService.CreateToken(checkUser);
                 string refreshToken = _authService.CreateRefreshToken(checkUser.Id);
 
                 return Ok(new SignInResponse(token, refreshToken));
             }
             catch (Exception ex)
             {
-                return CreateValidationProblemDetails("SignIn", ex.Message, 500);
+                return CreateValidationProblemDetails("SignIn", ex.ToString(), 500);
             }
         }
 
         [HttpPost]
         [Route("RefreshToken")]
-        public IActionResult RefreshToken() 
+        public IActionResult RefreshToken(RefreshTokenRequest request) 
         {
-            return Ok();
-        }
-        
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>()
+            try
             {
-                new Claim("Guid", Guid.NewGuid().ToString()),
-                new Claim("UserId", user.Id.ToString()),
-            };
+                bool result = _authService.RefreshToken(out RefreshTokenResponse response, request);
 
-            SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.JWT!.PrivateKey!));
+                if (!result)
+                {
+                    return CreateValidationProblemDetails("RefreshToken", "Invalid Refresh Token", 400);
+                }
 
-            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            JwtSecurityToken token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
-                signingCredentials: creds);
-
-            string jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-        }  
+                return Ok(new RefreshTokenResponse(response.AccessToken, response.RefreshToken));
+            }
+            catch (Exception ex)
+            {
+                return CreateValidationProblemDetails("RefreshToken", ex.ToString(), 500);
+            }
+        }
     }
 }

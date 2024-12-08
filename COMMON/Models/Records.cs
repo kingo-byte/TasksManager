@@ -9,5 +9,7 @@ namespace COMMON.Models
     public class Records
     {
         public record SignInResponse(string AccessToken, string RefreshToken);
+        public record RefreshTokenRequest(string RefreshToken);
+        public record RefreshTokenResponse(string AccessToken, string RefreshToken);
     }
 }

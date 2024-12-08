@@ -73,6 +73,13 @@ namespace TasksManager.Controllers
                 return CreateValidationProblemDetails("SignIn", ex.Message, 500);
             }
         }
+
+        [HttpPost]
+        [Route("RefreshToken")]
+        public IActionResult RefreshToken() 
+        {
+            return Ok();
+        }
         
         private string CreateToken(User user)
         {

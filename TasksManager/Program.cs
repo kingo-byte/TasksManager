@@ -1,15 +1,10 @@
-using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TasksManager.BackgroundServices;
 using BAL.IServices;
 using BAL.Services;
 using COMMON;
 using DAL.DapperAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using BAL.Events.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
@@ -35,14 +30,11 @@ builder.Services.Configure<Configuration>(builder.Configuration.GetSection("Conf
 
 builder.Services.AddTransient<DapperAccess>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<AuthMain>();
-builder.Services.AddScoped<AuthEvents>();
-builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<BAL.BAL>();
 
 WebApplication app = builder.Build();
 
-if (!environment.IsDevelopment()) 
+if (!environment.IsDevelopment())
 {
     // Bind to the PORT environment variable required by Heroku
     string port = Environment.GetEnvironmentVariable("PORT") ?? "8080"; // Default to 8080 if PORT not set

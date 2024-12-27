@@ -1,5 +1,4 @@
-﻿using BAL.IServices;
-using COMMON;
+﻿using COMMON;
 using COMMON.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -10,12 +9,12 @@ namespace TasksManager.Controllers
     [ApiController]
     public class UserController : BaseController
     {
-        private readonly IUserService _userService;
+        private readonly BAL.BAL _bal;
         private readonly Configuration _configuration;
 
-        public UserController(IUserService userService, IOptions<Configuration> configuration) 
+        public UserController(BAL.BAL bal, IOptions<Configuration> configuration) 
         {
-            _userService = userService;
+            _bal = bal;
             _configuration = configuration.Value;
         }
 
@@ -25,7 +24,7 @@ namespace TasksManager.Controllers
         {
             try
             {
-                User? user = _userService.GetUserWithTasks(id);
+                User? user = _bal.GetUserWithTasks(id);
                 
                 return Ok(user);
             }

@@ -1,5 +1,4 @@
-﻿using BAL.Events.Auth;
-using BAL.IServices;
+﻿using BAL.IServices;
 using COMMON;
 using COMMON.Models;
 using DAL.DapperAccess;
@@ -18,17 +17,12 @@ namespace BAL.Services
     public class AuthService : IAuthService
     {
         private readonly DapperAccess _dapperAccess;
-        private readonly AuthMain _authMain;
-        private readonly AuthEvents _authEvents;
         private readonly Configuration _configuration;
 
-        public AuthService(DapperAccess dapperAccess, AuthMain authMain, AuthEvents authEvents, IOptions<Configuration> configuration)
+        public AuthService(DapperAccess dapperAccess, IOptions<Configuration> configuration)
         {
             _dapperAccess = dapperAccess;
-            _authMain = authMain;
-            _authEvents = authEvents;
             _configuration = configuration.Value;
-            _authMain.InitializeEvents();
         }
 
         public User? GetUserByCredentials(string? userName, string? email)
@@ -38,7 +32,7 @@ namespace BAL.Services
             parameters.Add("P__UserName", userName);
             parameters.Add("P__Email", email);
 
-            return _dapperAccess.QueryFirst<User>("sp_GetUserByCredentials", parameters);    
+            return _dapperAccess.QueryFirst<User>("sp_GetUserByCredentials", parameters);
         }
 
         public User? GetUserById(long userId)
@@ -47,13 +41,11 @@ namespace BAL.Services
 
             parameters.Add("P__UserId", userId);
 
-            return _dapperAccess.QueryFirst<User>("sp_GetUserById", parameters); 
+            return _dapperAccess.QueryFirst<User>("sp_GetUserById", parameters);
         }
 
         public long SignUp(SignUpRequest request)
         {
-            _authEvents.InvokePreEventSignUp(ref request);
-
             (byte[] passwordSalt, byte[] passwordHash) = CreatePasswordHash(request.Password);
 
             User user = new User()
@@ -88,7 +80,7 @@ namespace BAL.Services
             parameters.Add("P__UserId", userId);
             parameters.Add("P__ExpiresOnUtc", DateTime.UtcNow.AddDays(7));
 
-            _dapperAccess.Execute("sp_CreateRefreshToken", parameters); 
+            _dapperAccess.Execute("sp_CreateRefreshToken", parameters);
 
             return refreshToken;
         }
@@ -112,7 +104,7 @@ namespace BAL.Services
 
             string updatedAccessToken = CreateToken(loggedInUser);
             string updatedRefreshToken = CreateRefreshToken(refreshToken.UserId);
-            
+
             response = new RefreshTokenResponse(updatedAccessToken, updatedRefreshToken);
 
             return true;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static COMMON.DTOs.Dtos;
+using static COMMON.Models.Model;
 using Task = COMMON.Models.Task;
 
 namespace COMMON.Extensions

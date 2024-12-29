@@ -1,11 +1,6 @@
-﻿using COMMON.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static COMMON.Models.Records;
+﻿using static COMMON.Models.Model;
 using static COMMON.Requests;
+using static COMMON.Responses;
 
 namespace BAL.IServices
 {

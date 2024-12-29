@@ -26,7 +26,6 @@ namespace COMMON
             public required string Password { get; set; }
         }
 
-        
         public class EditTaskRequest
         {
             public required long TaskId { get; set; }
@@ -39,6 +38,9 @@ namespace COMMON
             [MaxLength(500)]
             public required string Description { get; set; }
             public DateTime DueDate { get; set; }
-        }   
+        }
+
+        public record RefreshTokenRequest(string RefreshToken);
+        public record GetLookupByTableNamesRequest(string TableNames);
     }
 }

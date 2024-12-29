@@ -3,7 +3,7 @@ using static COMMON.Requests;
 
 namespace TasksManager.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TaskController : BaseController
     {

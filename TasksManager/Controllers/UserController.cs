@@ -1,11 +1,11 @@
 ﻿using COMMON;
-using COMMON.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using static COMMON.Models.Model;
 
 namespace TasksManager.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseController
     {

@@ -3,17 +3,14 @@ using COMMON;
 using COMMON.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using static COMMON.Models.Records;
+using static COMMON.Models.Model;
 using static COMMON.Requests;
+using static COMMON.Responses;
 
 namespace TasksManager.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : BaseController
     {
         private readonly ILogger<AuthController> _logger;

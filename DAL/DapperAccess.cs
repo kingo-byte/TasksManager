@@ -41,7 +41,7 @@ namespace DAL.DapperAccess
 
                 try
                 {
-                    return db.Query<T>(storedProcedure, parameters = null, commandType: CommandType.StoredProcedure);
+                    return db.Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
                 }
                 catch (Exception ex)
                 {

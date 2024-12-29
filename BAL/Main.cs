@@ -1,7 +1,9 @@
 ﻿using COMMON.Models;
 using Dapper;
 using System.Data;
+using static COMMON.Models.Model;
 using static COMMON.Requests;
+using static COMMON.Responses;
 
 namespace BAL
 {
@@ -51,6 +53,32 @@ namespace BAL
             long taskId = parameters.Get<long>("P__TaskId");
 
             return taskId;
+        }
+        #endregion
+
+        #region GetLookupByTableNames
+        public GetLookupByTableNamesResponse GetLookupByTableNames(GetLookupByTableNamesRequest request)
+        {
+            OnPreEventGetLookupByTableNames?.Invoke(ref request);
+
+            GetLookupByTableNamesResponse response = new()
+            {
+                Lookups = []
+            };
+
+            DynamicParameters parameters = new DynamicParameters();
+
+            string test = request.TableNames;
+
+            parameters.Add("P__TableNames", test);
+
+            List<Lookup> lookups = _dapperAccess.Query<Lookup>("sp_GetLookupByTableNames", parameters).ToList();
+
+            Dictionary<string, List<Lookup>> result = new();
+
+            OnPostEventGetLookupByTableNames?.Invoke(request,ref response, lookups);
+
+            return response;
         }
         #endregion
     }

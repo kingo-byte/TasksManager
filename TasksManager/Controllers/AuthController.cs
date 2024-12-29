@@ -24,8 +24,7 @@ namespace TasksManager.Controllers
             _configuration = configuration.Value;
         }
 
-        [HttpPost]
-        [Route("SignUp")]
+        [HttpPost("SignUp")]
         public IActionResult SignUp(SignUpRequest request)
         {
             try
@@ -45,8 +44,7 @@ namespace TasksManager.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("SignIn")]
+        [HttpPost("SignIn")]
         public IActionResult SignIn(SignInRequest request) 
         {
             try
@@ -74,8 +72,7 @@ namespace TasksManager.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("RefreshToken")]
+        [HttpPost("RefreshToken")]
         public IActionResult RefreshToken(RefreshTokenRequest request) 
         {
             try

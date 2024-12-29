@@ -15,7 +15,7 @@ namespace TasksManager.Controllers
             _bal = bal;
         }
 
-        [HttpPost("GetLookupByTableNames")]
+        [HttpPost("GetLookupByTableNames"), Authorize]
         public IActionResult GetLookupByTableNames(GetLookupByTableNamesRequest request)
         {
             try

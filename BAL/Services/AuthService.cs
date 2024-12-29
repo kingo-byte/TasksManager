@@ -125,7 +125,7 @@ namespace BAL.Services
 
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddMinutes((double)_configuration.JWT.ExpiryTimeInMinutes!),
                 signingCredentials: creds);
 
             string jwt = new JwtSecurityTokenHandler().WriteToken(token);

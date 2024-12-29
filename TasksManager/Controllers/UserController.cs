@@ -1,4 +1,5 @@
 ﻿using COMMON;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using static COMMON.Models.Model;
@@ -18,8 +19,7 @@ namespace TasksManager.Controllers
             _configuration = configuration.Value;
         }
 
-        [HttpGet]
-        [Route("{id}/Tasks")]
+        [HttpGet("{id}/Tasks"), Authorize]
         public IActionResult GetUserTasks([FromRoute] long id)
         {
             try

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using static COMMON.Requests;
 
 namespace TasksManager.Controllers
@@ -13,8 +14,7 @@ namespace TasksManager.Controllers
             _bal = bal;
         }
 
-        [HttpPost]
-        [Route("EditTask")]
+        [HttpPost("EditTask"), Authorize]
         public IActionResult EditTask(EditTaskRequest request)
         {
             try

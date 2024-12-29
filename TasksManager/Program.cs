@@ -34,10 +34,9 @@ builder.Services.AddScoped<BAL.BAL>();
 
 WebApplication app = builder.Build();
 
-if (!environment.IsDevelopment())
+if (environment.IsProduction())
 {
-    // Bind to the PORT environment variable required by Heroku
-    string port = Environment.GetEnvironmentVariable("PORT") ?? "8080"; // Default to 8080 if PORT not set
+    string port = Environment.GetEnvironmentVariable("PORT") ?? throw new ArgumentNullException($"Application port number is missing");
     app.Urls.Add($"http://*:{port}");
 }
 

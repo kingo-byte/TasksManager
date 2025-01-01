@@ -88,7 +88,7 @@ namespace BAL.Services
 
         public bool RefreshToken(out RefreshTokenResponse response, RefreshTokenRequest request)
         {
-            response = new RefreshTokenResponse(string.Empty, string.Empty);
+            response = new RefreshTokenResponse() { AccessToken = string.Empty, RefreshToken = string.Empty };
 
             DynamicParameters parameters = new DynamicParameters();
 
@@ -106,7 +106,7 @@ namespace BAL.Services
             string updatedAccessToken = CreateToken(loggedInUser);
             string updatedRefreshToken = CreateRefreshToken(refreshToken.UserId);
 
-            response = new RefreshTokenResponse(updatedAccessToken, updatedRefreshToken);
+            response = new RefreshTokenResponse() { AccessToken = updatedAccessToken, RefreshToken = updatedRefreshToken };
 
             return true;
         }

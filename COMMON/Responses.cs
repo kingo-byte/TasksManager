@@ -4,8 +4,17 @@ namespace COMMON
 {
     public class Responses
     {
-        public record RefreshTokenResponse(string AccessToken, string RefreshToken);
-        public record SignInResponse(string AccessToken, string RefreshToken);
+        public class RefreshTokenResponse 
+        {
+            public string AccessToken { get; set; } = string.Empty;
+            public string RefreshToken { get; set; } = string.Empty;
+        }
+
+        public class SignInResponse 
+        {
+            public string AccessToken { get; set; } = string.Empty;
+            public string RefreshToken { get; set; } = string.Empty;
+        }
 
         public class GetLookupByTableNamesResponse() 
         {

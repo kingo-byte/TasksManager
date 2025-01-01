@@ -15,7 +15,7 @@ namespace COMMON
             public required string Password { get; set; }
         }
 
-        public class SignInRequest 
+        public class SignInRequest
         {
             [MaxLength(250)]
             public string? UserName { get; set; }
@@ -40,7 +40,14 @@ namespace COMMON
             public DateTime DueDate { get; set; }
         }
 
-        public record RefreshTokenRequest(string RefreshToken);
-        public record GetLookupByTableNamesRequest(string TableNames);
+        public class RefreshTokenRequest
+        {
+            public required string RefreshToken { get; set; }
+        }
+
+        public class GetLookupByTableNamesRequest
+        {
+            public required string TableNames { get; set; }
+        }
     }
 }

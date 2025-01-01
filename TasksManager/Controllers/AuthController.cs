@@ -45,7 +45,7 @@ namespace TasksManager.Controllers
         }
 
         [HttpPost("SignIn")]
-        public IActionResult SignIn(SignInRequest request) 
+        public IActionResult SignIn(SignInRequest request)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace TasksManager.Controllers
                 string token = _authService.CreateToken(checkUser);
                 string refreshToken = _authService.CreateRefreshToken(checkUser.Id);
 
-                return Ok(new SignInResponse(token, refreshToken));
+                return Ok(new SignInResponse() { AccessToken = token, RefreshToken = refreshToken });
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace TasksManager.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        public IActionResult RefreshToken(RefreshTokenRequest request) 
+        public IActionResult RefreshToken(RefreshTokenRequest request)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace TasksManager.Controllers
                     return CreateValidationProblemDetails("RefreshToken", "Invalid Refresh Token", 400);
                 }
 
-                return Ok(new RefreshTokenResponse(response.AccessToken, response.RefreshToken));
+                return Ok(new RefreshTokenResponse() { AccessToken = response.AccessToken, RefreshToken = response.RefreshToken });
             }
             catch (Exception ex)
             {
